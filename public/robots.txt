@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://amirtha-varshini.vercel.app/sitemap.xml
