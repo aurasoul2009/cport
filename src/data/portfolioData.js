@@ -55,16 +55,15 @@ export const skillCategories = [
     ]
   },
   {
-    name: "Business Intelligence & Tools",
-    color: "from-purple-500 to-indigo-600",
-    skills: [
-      { name: "Dashboard Design", level: "Expert", icon: "FiPieChart" },
-      { name: "Trend Analysis", level: "Advanced", icon: "FiActivity" },
-      { name: "Financial P&L", level: "Advanced", icon: "FiDollarSign" },
-      { name: "Python Basics", level: "Intermediate", icon: "SiPython" },
-      { name: "MS Office Suite", level: "Expert", icon: "FiBriefcase" },
-      { name: "Typewriting (English)", level: "Senior Distinction", icon: "FiFeather" }
-    ]
+  name: "Business Intelligence & Tools",
+  color: "from-purple-500 to-indigo-600",
+  skills: [
+    { name: "Dashboard Design", level: "Expert", icon: "FiPieChart" },
+    { name: "Trend Analysis", level: "Advanced", icon: "FiActivity" },
+    { name: "Financial P&L", level: "Advanced", icon: "FiDollarSign" },
+    { name: "MS Office Suite", level: "Expert", icon: "FiBriefcase" },
+    { name: "Typewriting (English)", level: "Senior Distinction", icon: "FiFeather" }
+  ]
   }
 ];
 
@@ -144,19 +143,19 @@ export const experienceTimeline = [
     type: "education"
   },
   {
-    period: "2024 - Present",
-    role: "MIS & Data Analytics Specialist",
-    organization: "Project & Portfolio Development",
-    grade: "Advanced Excel & DAX Certified",
-    description: "Designed and implemented automated MIS dashboards (Medicine Data Vault, Fiscal Matrix, Fraud Pulse Analytics) utilizing Power Query, Power Pivot, DAX, and complex formulas.",
-    type: "work"
-  },
-  {
-    period: "2024",
+    period: "2026",
     role: "Excel Power Query, Power Pivot & DAX Certification",
     organization: "Udemy Professional Certification",
     grade: "Distinction",
     description: "Mastered data modeling, relational star schemas, DAX measures, automated ETL pipelines, and executive BI report creation.",
+    type: "certification"
+  },
+  {
+    period: "2026",
+    role: "Typewriting Certification",
+    organization: "State Board of Technical Education",
+    grade: "",
+    description: "Professional Typewriting Certification with practical typing proficiency.",
     type: "certification"
   }
 ];
@@ -165,11 +164,12 @@ export const certificatesList = [
   {
     title: "Excel Power Query, Power Pivot & DAX",
     issuer: "Udemy Certified",
-    year: "2024",
+    year: "2026",
     credentialId: "UC-DAX-EXCEL-2024",
     description: "Advanced data modeling, ETL automation, and complex DAX measure writing.",
     icon: "SiMicrosoft"
   },
+
   {
     title: "Typewriting (English) – Senior Grade",
     issuer: "State Board of Technical Education",
@@ -218,12 +218,6 @@ export const servicesData = [
     icon: "FiFilter",
     description: "Cleansing raw messy datasets, resolving missing records, removing duplicates, and structuring normalized data models for business auditing.",
     gradient: "from-blue-500 to-indigo-600"
-  },
-  {
-    title: "Python Data Scripting",
-    icon: "SiPython",
-    description: "Automating repetitive data handling tasks, web scraping, and spreadsheet manipulation scripts using Python routines.",
-    gradient: "from-violet-500 to-purple-600"
   }
 ];
 
