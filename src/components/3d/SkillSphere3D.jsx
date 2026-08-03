@@ -2,7 +2,6 @@ import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Text, Float, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { skillsList3D } from '../../data/portfolioData';
 
 function Word({ children, position }) {
   const fontProps = { fontSize: 0.35, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false };
@@ -30,11 +29,10 @@ function Word({ children, position }) {
   );
 }
 
-function Cloud({ radius = 3.2 }) {
+function Cloud({ skills, radius = 3.2 }) {
   const words = useMemo(() => {
     const temp = [];
     const sphereRadius = radius;
-    const skills = skillsList3D;
     const len = skills.length;
     for (let i = 0; i < len; i++) {
       const phi = Math.acos(-1 + (2 * i) / len);
@@ -45,7 +43,7 @@ function Cloud({ radius = 3.2 }) {
       temp.push({ word: skills[i], pos: [x, y, z] });
     }
     return temp;
-  }, [radius]);
+  }, [radius, skills]);
 
   const groupRef = useRef();
 
@@ -67,7 +65,7 @@ function Cloud({ radius = 3.2 }) {
   );
 }
 
-export default function SkillSphere3D() {
+export default function SkillSphere3D({ skills }) {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
@@ -81,7 +79,7 @@ export default function SkillSphere3D() {
       <Canvas camera={{ position: [0, 0, 7.5], fov: 50 }}>
         <ambientLight intensity={1} />
         <pointLight position={[10, 10, 10]} intensity={1.5} color="#00f0ff" />
-        <Cloud radius={2.8} />
+        <Cloud skills={skills} radius={2.8} />
         <OrbitControls
           enableZoom={false}
           enableRotate={!isTouchDevice}

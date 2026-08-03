@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiDownload, FiArrowRight } from 'react-icons/fi';
-import { personalInfo } from '../../data/portfolioData';
 import useMousePosition from '../../hooks/useMousePosition';
 import MagneticButton from '../ui/MagneticButton';
 
-export default function Hero({ onOpenResumeModal }) {
+const metricColors = {
+  cyan: 'text-cyan-400',
+  purple: 'text-purple-400',
+  emerald: 'text-emerald-400'
+};
+
+export default function Hero({ personalInfo, metrics }) {
   const mouse = useMousePosition();
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
@@ -84,10 +89,10 @@ export default function Hero({ onOpenResumeModal }) {
               </span>
             </MagneticButton>
 
-            {/* Download Resume / View Resume Modal */}
-            <MagneticButton onClick={onOpenResumeModal} className="w-full sm:w-auto">
+            {/* Download Resume */}
+            <MagneticButton href="/resume/resume.pdf" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <span className="w-full sm:w-auto px-5 py-3 sm:px-6 sm:py-3.5 rounded-xl glass-panel border border-cyan-500/40 text-slate-200 hover:text-cyan-400 font-bold text-xs uppercase tracking-widest hover:border-cyan-400 hover:shadow-glow-blue transition-all flex items-center justify-center gap-2.5">
-                <FiDownload className="text-base" /> Resume / CV
+                <FiDownload className="text-base" /> Download Resume
               </span>
             </MagneticButton>
 
@@ -101,18 +106,12 @@ export default function Hero({ onOpenResumeModal }) {
 
           {/* Quick Metrics */}
           <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-6 w-full max-w-lg">
-            <div>
-              <div className="font-display font-extrabold text-xl sm:text-3xl text-cyan-400">15+</div>
-              <div className="text-[9px] sm:text-[11px] font-mono text-slate-400 uppercase tracking-wider">Dashboards</div>
-            </div>
-            <div>
-              <div className="font-display font-extrabold text-xl sm:text-3xl text-purple-400">70%</div>
-              <div className="text-[9px] sm:text-[11px] font-mono text-slate-400 uppercase tracking-wider">Automation</div>
-            </div>
-            <div>
-              <div className="font-display font-extrabold text-xl sm:text-3xl text-emerald-400">8.5</div>
-              <div className="text-[9px] sm:text-[11px] font-mono text-slate-400 uppercase tracking-wider">B.Sc. CGPA</div>
-            </div>
+            {metrics.map((metric) => (
+              <div key={metric.id}>
+                <div className={`font-display font-extrabold text-xl sm:text-3xl ${metricColors[metric.color] || 'text-cyan-400'}`}>{metric.value}</div>
+                <div className="text-[9px] sm:text-[11px] font-mono text-slate-400 uppercase tracking-wider">{metric.detail}</div>
+              </div>
+            ))}
           </div>
         </motion.div>
 
@@ -149,6 +148,8 @@ export default function Hero({ onOpenResumeModal }) {
               <img
                 src="/profile.png"
                 alt="Amirtha Varshini V"
+                loading="eager"
+                decoding="async"
                 className="w-full h-full object-cover rounded-full filter saturate-[1.05] contrast-[1.05]"
               />
             </div>

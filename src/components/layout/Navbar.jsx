@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiDownload, FiArrowUpRight } from 'react-icons/fi';
 
-export default function Navbar({ onOpenResumeModal }) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -19,6 +19,20 @@ export default function Navbar({ onOpenResumeModal }) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [mobileMenuOpen]);
 
   const navLinks = [
     { name: 'About', href: '#about' },
@@ -89,8 +103,10 @@ export default function Navbar({ onOpenResumeModal }) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-white text-xl p-2 rounded-xl glass-panel focus:outline-none border-white/10"
+            className="touch-target md:hidden text-white text-xl p-2 rounded-xl glass-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 border-white/10"
             aria-label="Toggle Navigation Menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <FiX /> : <FiMenu />}
           </button>
@@ -101,10 +117,11 @@ export default function Navbar({ onOpenResumeModal }) {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            id="mobile-navigation"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-x-3 top-16 z-[989] glass-panel p-5 rounded-2xl border border-white/10 shadow-2xl md:hidden"
+            className="fixed inset-x-3 top-16 z-[989] max-h-[calc(100dvh-5rem)] overflow-y-auto glass-panel p-5 rounded-2xl border border-white/10 shadow-2xl md:hidden"
           >
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
@@ -112,26 +129,26 @@ export default function Navbar({ onOpenResumeModal }) {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xs font-semibold uppercase tracking-wider text-slate-200 hover:text-cyan-400 py-2 border-b border-white/5"
+                  className="touch-target flex items-center text-xs font-semibold uppercase tracking-wider text-slate-200 hover:text-cyan-400 py-2 border-b border-white/5"
                 >
                   {link.name}
                 </a>
               ))}
               
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (onOpenResumeModal) onOpenResumeModal();
-                }}
-                className="w-full text-left py-2 text-xs font-semibold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-white/5"
+              <a
+                href="/resume/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="touch-target w-full text-left py-2 text-xs font-semibold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-white/5"
               >
-                <FiDownload /> View Resume / CV
-              </button>
+                <FiDownload /> Download Resume
+              </a>
 
               <a
                 href="#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="mt-2 text-center py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-xs uppercase tracking-wider shadow-glow-blue"
+                className="touch-target mt-2 flex items-center justify-center text-center py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-xs uppercase tracking-wider shadow-glow-blue"
               >
                 Get In Touch
               </a>

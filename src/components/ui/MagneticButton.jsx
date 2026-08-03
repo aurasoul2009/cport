@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-export default function MagneticButton({ children, className = '', onClick, href }) {
+export default function MagneticButton({ children, className = '', onClick, href, target, rel, download }) {
   const ref = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -32,7 +32,7 @@ export default function MagneticButton({ children, className = '', onClick, href
   );
 
   if (href) {
-    return <a href={href}>{Content}</a>;
+    return <a href={href} target={target} rel={rel} download={download}>{Content}</a>;
   }
 
   return Content;

@@ -1,25 +1,10 @@
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
-import { personalInfo } from '../data/portfolioData';
-
-const socialLinks = [
-  {
-    href: personalInfo.linkedin,
-    label: 'LinkedIn',
-    icon: FiLinkedin
-  },
-  {
-    href: personalInfo.github,
-    label: 'GitHub',
-    icon: FiGithub
-  },
-  {
-    href: `mailto:${personalInfo.email}`,
-    label: 'Email',
-    icon: FiMail
-  }
-];
-
-export default function FloatingSocial() {
+export default function FloatingSocial({ personalInfo }) {
+  const socialLinks = [
+    { href: personalInfo.linkedin, label: 'LinkedIn', icon: FiLinkedin },
+    { href: personalInfo.github, label: 'GitHub', icon: FiGithub },
+    { href: `mailto:${personalInfo.email}`, label: 'Email', icon: FiMail }
+  ];
   return (
     <aside className="fixed left-4 top-[40%] z-[940] hidden lg:flex flex-col gap-3">
       {socialLinks.map((item) => {

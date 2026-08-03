@@ -8,6 +8,7 @@ import Skills from './components/sections/Skills';
 import Experience from './components/sections/Experience';
 import Projects from './components/sections/Projects';
 import Services from './components/sections/Services';
+import Certificates from './components/sections/Certificates';
 import Resume from './components/Resume';
 import Contact from './components/sections/Contact';
 import Footer from './components/sections/Footer';
@@ -16,49 +17,51 @@ import ScrollProgress from './components/ScrollProgress';
 import AnimatedCursor from './components/AnimatedCursor';
 import MouseGlow from './components/MouseGlow';
 import FloatingSocial from './components/FloatingSocial';
-import { useTheme } from './hooks/usePortfolio';
+import {
+  aboutCards,
+  certificatesList,
+  experienceTimeline,
+  heroMetrics,
+  personalInfo,
+  professionalSummary,
+  projectsData,
+  servicesData,
+  skillsData,
+  summaryStats
+} from './data/portfolioData';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const { dark, toggle } = useTheme();
-
-  const openResumeModal = () => {
-    const url = '/resume.pdf';
-    if (typeof window !== 'undefined') {
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      // setting download to empty string signals a download where supported; opening in new tab otherwise
-      a.download = '';
-      a.click();
-    }
-  };
 
   return (
     <>
-      <AnimatePresence>
-        {loading && <Loader onComplete={() => setLoading(false)} />}
-      </AnimatePresence>
-
+      <AnimatePresence>{loading && <Loader onComplete={() => setLoading(false)} />}</AnimatePresence>
       {!loading && (
-        <div className={`relative min-h-screen bg-background text-white ${dark ? 'dark' : 'light'}`}>
+        <div className="relative min-h-screen overflow-x-hidden bg-background text-white">
           <ScrollProgress />
           <AnimatedCursor />
           <MouseGlow />
-          <Navbar onOpenResumeModal={openResumeModal} dark={dark} toggleTheme={toggle} />
-          <FloatingSocial />
+          <Navbar />
+          <FloatingSocial personalInfo={personalInfo} />
           <main>
-            <Hero onOpenResumeModal={openResumeModal} />
-            <About />
-            <Skills />
-            <Experience />
-            <Projects />
-            <Services />
-            <Resume onOpenResumeModal={openResumeModal} />
-            <Contact />
+            <Hero personalInfo={personalInfo} metrics={heroMetrics} />
+            <About cards={aboutCards} />
+            <Skills skills={skillsData} />
+            <Experience timeline={experienceTimeline} />
+            <Projects projects={projectsData} />
+            <Services services={servicesData} />
+            <Resume
+              personalInfo={personalInfo}
+              professionalSummary={professionalSummary}
+              summaryStats={summaryStats}
+              projects={projectsData}
+              skills={skillsData}
+              certificates={certificatesList}
+            />
+            <Certificates certificates={certificatesList} />
+            <Contact personalInfo={personalInfo} />
           </main>
-          <Footer />
+          <Footer personalInfo={personalInfo} />
           <ScrollTop />
         </div>
       )}

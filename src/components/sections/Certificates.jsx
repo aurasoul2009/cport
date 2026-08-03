@@ -1,9 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { certificatesList } from '../../data/portfolioData';
 import { FiCheckCircle, FiShield } from 'react-icons/fi';
 
-export default function Certificates() {
+export default function Certificates({ certificates }) {
   return (
     <section id="certificates" className="py-16 sm:py-24 relative z-10 overflow-hidden">
       <div className="w-[94%] sm:w-[92%] max-w-7xl mx-auto">
@@ -21,9 +20,9 @@ export default function Certificates() {
 
         {/* Horizontal Scroll Track */}
         <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-8 pt-2 scrollbar-none snap-x snap-mandatory">
-          {certificatesList.map((cert, index) => (
+          {certificates.map((cert, index) => (
             <motion.div
-              key={cert.title}
+              key={cert.id}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -35,6 +34,15 @@ export default function Certificates() {
               <div className="absolute -top-24 -left-24 w-48 h-48 bg-gradient-to-br from-white/10 to-transparent rotate-45 group-hover:translate-x-96 group-hover:translate-y-96 transition-transform duration-1000 pointer-events-none" />
 
               <div>
+                {cert.image && (
+                  <img
+                    src={cert.image}
+                    alt={`${cert.name} certificate`}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-32 object-cover rounded-2xl border border-white/10 mb-5"
+                  />
+                )}
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform">
                     <FiShield />
@@ -45,10 +53,10 @@ export default function Certificates() {
                 </div>
 
                 <h3 className="font-display font-bold text-lg sm:text-xl text-white mb-1.5 sm:mb-2 group-hover:text-cyan-300 transition-colors">
-                  {cert.title}
+                  {cert.name}
                 </h3>
                 <p className="text-xs font-mono text-purple-400 mb-3 sm:mb-4 font-semibold">
-                  {cert.issuer}
+                  {cert.institute}
                 </p>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4 sm:mb-6">

@@ -12,6 +12,13 @@
     --vivid-cyan: #06b6d4;
   }
 
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100%;
+  }
+
   body {
     background-color: var(--bg-dark);
     color: #f1f5f9;
@@ -22,25 +29,10 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Custom Lenis Smooth Scroll Setup */
-  html.lenis, html.lenis body {
-    height: auto;
-  }
-  
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-  
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-  
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-  
-  .lenis.lenis-smooth iframe {
-    pointer-events: none;
+  img,
+  video,
+  canvas {
+    max-width: 100%;
   }
 
   /* Custom Glowing Scrollbar */
@@ -84,6 +76,11 @@
   border-color: rgba(0, 240, 255, 0.3);
   box-shadow: 0 12px 40px rgba(0, 240, 255, 0.15);
   transform: translateY(-4px);
+}
+
+.touch-target {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 /* Neon Text & Border Effects */
@@ -170,4 +167,25 @@
   background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
   filter: blur(70px);
   animation: float 16s ease-in-out infinite reverse;
+}
+
+@media (hover: none) {
+  .glass-panel-hover:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

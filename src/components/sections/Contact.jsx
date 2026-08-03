@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { personalInfo } from '../../data/portfolioData';
 import { FiMail, FiPhone, FiMapPin, FiSend, FiLinkedin, FiGithub, FiCheckCircle } from 'react-icons/fi';
 
-export default function Contact() {
+export default function Contact({ personalInfo }) {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSending, setIsSending] = useState(false);
   const [sentSuccess, setSentSuccess] = useState(false);

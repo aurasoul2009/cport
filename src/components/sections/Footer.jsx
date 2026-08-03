@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { FiArrowUp, FiHeart } from 'react-icons/fi';
-import { personalInfo } from '../../data/portfolioData';
 
-export default function Footer() {
+export default function Footer({ personalInfo }) {
   const [timeString, setTimeString] = useState('');
 
   useEffect(() => {
@@ -36,16 +34,16 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
             <span className="font-display font-bold text-base text-white tracking-wider">
-              AMIRTHA VARSHINI V
+              {personalInfo.name.toUpperCase()}
             </span>
           </div>
-          <p className="text-xs font-mono text-slate-400">
-            Madurai, India • <span className="text-cyan-400 font-bold">{timeString} IST</span>
+          <p className="text-xs font-mono text-slate-400 text-center md:text-left">
+            {personalInfo.location} • <span className="text-cyan-400 font-bold">{timeString} IST</span>
           </p>
         </div>
 
         {/* Center: Copyright */}
-        <div className="text-xs text-slate-400 font-mono text-center flex items-center gap-1.5">
+        <div className="text-xs text-slate-400 font-mono text-center flex flex-wrap items-center justify-center gap-1.5">
           <span>&copy; {new Date().getFullYear()} All Rights Reserved. Crafted with</span>
           <FiHeart className="text-rose-500 fill-rose-500 text-sm inline" />
         </div>
@@ -53,8 +51,9 @@ export default function Footer() {
         {/* Right: Scroll to Top */}
         <button
           onClick={scrollToTop}
-          className="w-10 h-10 rounded-2xl glass-panel border border-white/10 hover:border-cyan-400 flex items-center justify-center text-slate-300 hover:text-cyan-400 shadow-glow-blue transition-colors"
+          className="touch-target w-11 h-11 rounded-2xl glass-panel border border-white/10 hover:border-cyan-400 flex items-center justify-center text-slate-300 hover:text-cyan-400 shadow-glow-blue transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
           title="Back to Top"
+          aria-label="Back to top"
         >
           <FiArrowUp className="text-lg" />
         </button>

@@ -1,8 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { servicesData } from '../../data/portfolioData';
 import { FiGrid, FiActivity, FiCpu, FiTrendingUp, FiFilter, FiArrowRight } from 'react-icons/fi';
-import { SiPython } from 'react-icons/si';
 
 const iconMap = {
   FiGrid: FiGrid,
@@ -10,10 +8,9 @@ const iconMap = {
   FiCpu: FiCpu,
   FiTrendingUp: FiTrendingUp,
   FiFilter: FiFilter,
-  SiPython: SiPython,
 };
 
-export default function Services() {
+export default function Services({ services }) {
   return (
     <section id="services" className="py-24 relative z-10">
       <div className="w-[92%] max-w-7xl mx-auto">
@@ -32,8 +29,8 @@ export default function Services() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {servicesData.map((service, index) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 sm:gap-8">
+          {services.map((service, index) => {
             const IconComponent = iconMap[service.icon] || FiGrid;
 
             return (
@@ -44,7 +41,7 @@ export default function Services() {
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: index * 0.15 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="glass-panel p-8 rounded-3xl border border-white/10 hover:border-cyan-400/50 hover:shadow-glow-blue transition-all group flex flex-col justify-between"
+                className={`glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 hover:border-cyan-400/50 hover:shadow-glow-blue transition-all group flex flex-col justify-between lg:col-span-2 ${index === 3 ? 'lg:col-start-2' : ''}`}
               >
                 <div>
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${service.gradient} flex items-center justify-center text-white text-2xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
