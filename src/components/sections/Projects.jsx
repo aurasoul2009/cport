@@ -1,32 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ProjectModal from '../ui/ProjectModal';
-import { FiGithub, FiMaximize2, FiVolume2, FiVolumeX, FiPlay } from 'react-icons/fi';
+import { FiGithub, FiMaximize2, FiPlay } from 'react-icons/fi';
 
 function ProjectVideoCard({ project, onSelect }) {
   const [videoError, setVideoError] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
-  const [isInView, setIsInView] = useState(false);
-  const mediaRef = useRef(null);
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsInView(entry.isIntersecting);
-      if (entry.isIntersecting) setShouldLoadVideo(true);
-    }, { rootMargin: '160px', threshold: 0.25 });
-    if (mediaRef.current) observer.observe(mediaRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-    if (isInView && !isCoarsePointer) video.play().catch(() => undefined);
-    else video.pause();
-  }, [isInView, shouldLoadVideo]);
+  const isVideoProject = project.mediaType === 'video' && Boolean(project.video);
 
   return (
     <motion.article
@@ -38,20 +17,21 @@ function ProjectVideoCard({ project, onSelect }) {
       className="min-w-0 glass-panel rounded-3xl overflow-hidden border border-white/10 hover:border-cyan-400/50 hover:shadow-glow-blue transition-all group flex flex-col h-full relative"
     >
       {/* Video Preview Container */}
-      <div ref={mediaRef} className="relative w-full h-[200px] sm:h-[230px] bg-[#08080c] overflow-hidden border-b border-white/10">
-        {shouldLoadVideo && project.video && !videoError ? (
+      <div className="relative w-full max-w-full aspect-[3/2] bg-[#08080c] overflow-hidden border-b border-white/10">
+        {isVideoProject && !videoError ? (
           <video
-            ref={videoRef}
             src={project.video}
-            poster={project.image}
+            poster={project.poster || undefined}
+            controls
             loop
-            muted={isMuted}
+            muted
             playsInline
             preload="metadata"
             onError={() => setVideoError(true)}
-            className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 pointer-events-none"
+            aria-label={`${project.title} project video`}
+            className="block w-full max-w-full h-auto aspect-[3/2] object-cover group-hover:scale-108 transition-transform duration-700"
           />
-        ) : project.image && !videoError ? (
+        ) : !isVideoProject && project.image ? (
           <img
             src={project.image}
             alt={`${project.title} preview`}
@@ -78,23 +58,8 @@ function ProjectVideoCard({ project, onSelect }) {
           {project.category}
         </div>
 
-        {/* Mute / Unmute Audio Button */}
-        {project.video && shouldLoadVideo && !videoError && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsMuted(!isMuted);
-            }}
-            className="touch-target absolute top-2 right-2 p-2 rounded-full glass-panel border border-white/20 text-white hover:text-cyan-400 transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
-            title={isMuted ? "Unmute Preview Audio" : "Mute Preview Audio"}
-            aria-label={isMuted ? 'Unmute project preview' : 'Mute project preview'}
-          >
-            {isMuted ? <FiVolumeX className="text-xs" /> : <FiVolume2 className="text-xs text-cyan-400" />}
-          </button>
-        )}
-
         {/* Expand Trigger */}
-        <button type="button" onClick={() => onSelect(project)} aria-label={`Open ${project.title} case study`} className="touch-target absolute bottom-2 right-2 w-11 h-11 rounded-full glass-panel flex items-center justify-center text-white border border-white/20 group-hover:bg-cyan-500 group-hover:border-cyan-400 transition-colors shadow-lg z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
+        <button type="button" onClick={() => onSelect(project)} aria-label={`Open ${project.title} case study`} className={`touch-target absolute ${isVideoProject ? 'bottom-14' : 'bottom-2'} right-2 w-11 h-11 rounded-full glass-panel flex items-center justify-center text-white border border-white/20 group-hover:bg-cyan-500 group-hover:border-cyan-400 transition-colors shadow-lg z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300`}>
           <FiMaximize2 className="text-xs" />
         </button>
       </div>

@@ -6,6 +6,7 @@ import useDialogA11y from '../../hooks/useDialogA11y';
 export default function ProjectModal({ project, onClose }) {
   const dialogRef = useDialogA11y(Boolean(project), onClose);
   if (!project) return null;
+  const isVideoProject = project.mediaType === 'video' && Boolean(project.video);
 
   return (
     <AnimatePresence>
@@ -42,18 +43,18 @@ export default function ProjectModal({ project, onClose }) {
           </button>
 
           {/* Video Preview */}
-          <div className="w-full h-[180px] sm:h-[300px] md:h-[360px] rounded-2xl overflow-hidden mb-4 sm:mb-6 border border-white/10 relative bg-black mt-8 sm:mt-0">
-            {project.mediaType === 'video' && project.video ? (
+          <div className="w-full max-w-full aspect-[3/2] rounded-2xl overflow-hidden mb-4 sm:mb-6 border border-white/10 relative bg-black mt-8 sm:mt-0">
+            {isVideoProject ? (
               <video
                 src={project.video}
-                poster={project.image}
+                poster={project.poster || undefined}
                 controls
                 loop
                 muted
                 playsInline
                 preload="metadata"
                 aria-label={`${project.title} project video`}
-                className="w-full h-full object-cover"
+                className="block w-full max-w-full h-auto aspect-[3/2] object-cover"
               />
             ) : project.image ? (
               <img src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
