@@ -16,16 +16,24 @@ import ScrollProgress from './components/ScrollProgress';
 import AnimatedCursor from './components/AnimatedCursor';
 import MouseGlow from './components/MouseGlow';
 import FloatingSocial from './components/FloatingSocial';
-import ResumeModal from './components/ui/ResumeModal';
 import { useTheme } from './hooks/usePortfolio';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const [resumeOpen, setResumeOpen] = useState(false);
   const { dark, toggle } = useTheme();
 
-  const openResumeModal = () => setResumeOpen(true);
-  const closeResumeModal = () => setResumeOpen(false);
+  const openResumeModal = () => {
+    const url = '/resume.pdf';
+    if (typeof window !== 'undefined') {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      // setting download to empty string signals a download where supported; opening in new tab otherwise
+      a.download = '';
+      a.click();
+    }
+  };
 
   return (
     <>
@@ -52,7 +60,6 @@ export default function App() {
           </main>
           <Footer />
           <ScrollTop />
-          <ResumeModal isOpen={resumeOpen} onClose={closeResumeModal} />
         </div>
       )}
     </>
