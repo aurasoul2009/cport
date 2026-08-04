@@ -31,7 +31,7 @@ export default function Preloader({ onComplete }) {
           key="preloader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, filter: 'blur(20px)', transition: { duration: 0.8, ease: 'easeInOut' } }}
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#050505] text-white selection:bg-none"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] px-4 text-white selection:bg-none"
         >
           {/* Subtle Background Glow */}
           <div className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-blue-500/20 blur-[100px] animate-pulse-slow" />
@@ -65,7 +65,7 @@ export default function Preloader({ onComplete }) {
             AMIRTHA VARSHINI V
           </motion.h2>
 
-          <p className="text-xs uppercase font-mono tracking-[0.3em] text-cyan-400/80 mb-8">
+          <p className="max-w-full text-center text-[10px] sm:text-xs uppercase font-mono tracking-[0.18em] sm:tracking-[0.3em] text-cyan-400/80 mb-8">
             MIS Executive & Data Analyst Portfolio
           </p>
 

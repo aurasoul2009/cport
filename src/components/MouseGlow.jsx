@@ -14,7 +14,7 @@ export default function MouseGlow() {
 
   return (
     <div
-      className="pointer-events-none fixed z-[940] opacity-90"
+      className="fine-pointer-only pointer-events-none fixed z-[940] opacity-90"
       style={{ left: position.x - 120, top: position.y - 120 }}
     >
       <div className="h-[240px] w-[240px] rounded-full bg-gradient-to-tr from-cyan-500/20 via-purple-500/10 to-transparent blur-3xl" />

@@ -21,7 +21,6 @@ export const personalInfo = {
 };
 
 export const heroMetrics = [
-  { id: 'metric-dashboards', label: 'Dashboards', value: '15+', detail: 'Dashboards', color: 'cyan' },
   { id: 'metric-automation', label: 'Automation', value: '70%', detail: 'Automation', color: 'purple' },
   { id: 'metric-education', label: 'B.Sc. CGPA', value: '8.5', detail: 'B.Sc. CGPA', color: 'emerald' }
 ];
@@ -63,7 +62,6 @@ export const projectsData = [
     technologies: ['Excel', 'Power Query', 'Power Pivot', 'DAX', 'Slicers'],
     category: 'MIS & Sales Analytics',
     mediaType: 'video',
-    image: '/profile.png',
     video: '/projects/001.mp4',
     liveUrl: '',
     githubUrl: 'https://github.com/Amirtha-Varshini-V',
@@ -81,7 +79,6 @@ export const projectsData = [
     technologies: ['Power Query', 'Power Pivot', 'DAX', 'P&L Analytics', 'Excel'],
     category: 'Financial Analytics',
     mediaType: 'video',
-    image: '/profile.png',
     video: '/projects/002.mp4',
     liveUrl: '',
     githubUrl: 'https://github.com/Amirtha-Varshini-V',
@@ -99,7 +96,6 @@ export const projectsData = [
     technologies: ['Power Query', 'Power Pivot', 'DAX', 'Risk Modeling', 'Excel'],
     category: 'Risk Analytics',
     mediaType: 'video',
-    image: '/profile.png',
     video: '/projects/003.mp4',
     liveUrl: '',
     githubUrl: 'https://github.com/Amirtha-Varshini-V',
@@ -113,7 +109,7 @@ export const projectsData = [
 export const experienceTimeline = [
   { id: 'timeline-education', period: '2022 - 2025', title: 'Bachelor of Science in Computer Science', organization: 'The American College, Madurai', grade: 'CGPA: 8.5 / 10.0', description: 'Specialized in computer science fundamentals, database design, algorithmic analysis, and data handling techniques.', type: 'Education' },
   { id: 'timeline-power-query', period: '2026', title: 'Excel Power Query, Power Pivot & DAX', organization: 'Udemy Professional Certification', grade: 'Professional Training', description: 'Completed advanced training in data modeling, relational schemas, DAX measures, automated ETL pipelines, and executive report creation.', type: 'Training' },
-  { id: 'timeline-typewriting', period: '2026', title: 'Typewriting Certification', organization: 'State Board of Technical Education', grade: 'First Class with Distinction', description: 'Certified in accurate, high-speed English typewriting and professional document preparation.', type: 'Typewriting' }
+  { id: 'timeline-typewriting', period: '2024', title: 'Typewriting Certification', organization: 'State Board of Technical Education', grade: 'First Class with Distinction', description: 'Certified in accurate, high-speed English typewriting and professional document preparation.', type: 'Typewriting' }
 ];
 
 export const certificatesList = [
@@ -123,8 +119,6 @@ export const certificatesList = [
 ];
 
 export const summaryStats = [
-  { id: 'stat-experience', label: 'Experience', value: '3+', detail: 'Years learning and practice' },
-  { id: 'stat-dashboards', label: 'Dashboards', value: '15+', detail: 'MIS and analytics dashboards' },
   { id: 'stat-skills', label: 'Skills', value: '17', detail: 'Business intelligence tools' },
   { id: 'stat-certificates', label: 'Certificates', value: '3', detail: 'Professional credentials' }
 ];

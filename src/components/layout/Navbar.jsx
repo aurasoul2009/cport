@@ -5,15 +5,10 @@ import { FiMenu, FiX, FiDownload, FiArrowUpRight } from 'react-icons/fi';
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
-
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const currentScroll = window.scrollY;
-      setScrollProgress(totalScroll > 0 ? (currentScroll / totalScroll) * 100 : 0);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -45,14 +40,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Scroll Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-[3px] bg-white/5 z-[999]">
-        <motion.div
-          className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-electricBlue"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
       <header
         className={`fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 w-[95%] sm:w-[92%] max-w-7xl z-[990] transition-all duration-300 rounded-2xl ${
           scrolled
@@ -77,7 +64,7 @@ export default function Navbar() {
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8 glass-panel px-5 py-2 rounded-full border-white/10">
+          <nav className="hidden lg:flex items-center gap-6 lg:gap-8 glass-panel px-5 py-2 rounded-full border-white/10">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -103,7 +90,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="touch-target md:hidden text-white text-xl p-2 rounded-xl glass-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 border-white/10"
+            className="touch-target lg:hidden text-white text-xl p-2 rounded-xl glass-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 border-white/10"
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -121,7 +108,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-x-3 top-16 z-[989] max-h-[calc(100dvh-5rem)] overflow-y-auto glass-panel p-5 rounded-2xl border border-white/10 shadow-2xl md:hidden"
+            className="fixed inset-x-3 top-16 z-[989] max-h-[calc(100dvh-5rem)] overflow-y-auto glass-panel p-5 rounded-2xl border border-white/10 shadow-2xl lg:hidden"
           >
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (

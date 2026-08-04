@@ -105,7 +105,7 @@ export default function Hero({ personalInfo, metrics }) {
           </div>
 
           {/* Quick Metrics */}
-          <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-6 w-full max-w-lg">
+          <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 grid grid-cols-2 gap-3 sm:gap-8 w-full max-w-sm">
             {metrics.map((metric) => (
               <div key={metric.id}>
                 <div className={`font-display font-extrabold text-xl sm:text-3xl ${metricColors[metric.color] || 'text-cyan-400'}`}>{metric.value}</div>

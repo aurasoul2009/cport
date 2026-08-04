@@ -37,7 +37,7 @@ export default function App() {
     <>
       <AnimatePresence>{loading && <Loader onComplete={() => setLoading(false)} />}</AnimatePresence>
       {!loading && (
-        <div className="relative min-h-screen overflow-x-hidden bg-background text-white">
+        <div className="relative min-h-screen bg-background text-white">
           <ScrollProgress />
           <AnimatedCursor />
           <MouseGlow />

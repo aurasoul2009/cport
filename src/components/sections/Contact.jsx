@@ -1,37 +1,156 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { FiMail, FiPhone, FiMapPin, FiSend, FiLinkedin, FiGithub, FiCheckCircle } from 'react-icons/fi';
 
+const INITIAL_FORM_DATA = {
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+  botcheck: ''
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MINIMUM_SUBMISSION_TIME = 1500;
+
 export default function Contact({ personalInfo }) {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [isSending, setIsSending] = useState(false);
-  const [sentSuccess, setSentSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const submissionLock = useRef(false);
+  const formStartedAt = useRef(Date.now());
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => {
+      if (!prev[name]) return prev;
+
+      const nextErrors = { ...prev };
+      delete nextErrors[name];
+      return nextErrors;
+    });
+
+    if (status.message) {
+      setStatus({ type: '', message: '' });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (submissionLock.current) return;
+
+    const formElement = e.currentTarget;
+    const trimmedData = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      subject: formData.subject.trim(),
+      message: formData.message.trim(),
+      botcheck: formData.botcheck.trim()
+    };
+    const nextErrors = {};
+
+    if (!trimmedData.name) nextErrors.name = 'Name is required.';
+    if (!trimmedData.email) {
+      nextErrors.email = 'Email is required.';
+    } else if (!EMAIL_PATTERN.test(trimmedData.email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+    if (!trimmedData.subject) nextErrors.subject = 'Subject is required.';
+    if (!trimmedData.message) nextErrors.message = 'Message is required.';
+
+    setStatus({ type: '', message: '' });
+    setFieldErrors(nextErrors);
+
+    const firstInvalidField = Object.keys(nextErrors)[0];
+    if (firstInvalidField) {
+      requestAnimationFrame(() => {
+        formElement.elements.namedItem(firstInvalidField)?.focus();
+      });
+      return;
+    }
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim();
+    if (!accessKey) {
+      setStatus({
+        type: 'error',
+        message: 'Contact form is not configured yet.'
+      });
+      return;
+    }
+
+    if (
+      trimmedData.botcheck
+      || Date.now() - formStartedAt.current < MINIMUM_SUBMISSION_TIME
+    ) {
+      setStatus({
+        type: 'error',
+        message: 'Unable to send your message. Please try again.'
+      });
+      return;
+    }
+
+    submissionLock.current = true;
     setIsSending(true);
-    setErrorMessage('');
 
     try {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: trimmedData.name,
+          email: trimmedData.email,
+          subject: trimmedData.subject,
+          message: trimmedData.message,
+          from_name: 'Portfolio Contact Form',
+          replyto: trimmedData.email,
+          source: 'Portfolio Website',
+          botcheck: trimmedData.botcheck
+        })
       });
+      const result = await response.json();
 
-      setSentSuccess(true);
-      setIsSending(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      if (!response.ok || !result.success) {
+        throw new Error('Web3Forms rejected the submission.');
+      }
 
-      setTimeout(() => setSentSuccess(false), 5000);
+      setFormData({ ...INITIAL_FORM_DATA });
+      setFieldErrors({});
+      setStatus({
+        type: 'success',
+        message: 'Your message has been sent successfully.'
+      });
+      formStartedAt.current = Date.now();
+
+      try {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch (confettiError) {
+        if (import.meta.env.DEV) {
+          console.error('Contact form success animation failed:', confettiError);
+        }
+      }
     } catch (err) {
-      console.error('Email submit error:', err);
-      setErrorMessage('Could not send message automatically. Please email direct to amirthavarshini042@gmail.com');
+      if (import.meta.env.DEV) {
+        console.error('Contact form submission failed:', err);
+      }
+
+      setStatus({
+        type: 'error',
+        message: 'Unable to send your message. Please try again.'
+      });
+    } finally {
+      submissionLock.current = false;
       setIsSending(false);
     }
   };
@@ -146,81 +265,130 @@ export default function Contact({ personalInfo }) {
                 Send a Message
               </h3>
 
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-4 sm:space-y-6"
+                noValidate
+                aria-busy={isSending}
+              >
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="contact-botcheck">Leave this field empty</label>
+                  <input
+                    id="contact-botcheck"
+                    type="text"
+                    name="botcheck"
+                    value={formData.botcheck}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <label className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
+                    <label htmlFor="contact-name" className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
                       Your Name
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       name="name"
                       required
                       value={formData.name}
                       onChange={handleChange}
+                      autoComplete="name"
+                      aria-invalid={Boolean(fieldErrors.name)}
+                      aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
                       placeholder="e.g. Alex Rivera"
                       className="w-full px-4 py-3.5 rounded-xl glass-panel border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all text-base"
                     />
+                    {fieldErrors.name && (
+                      <p id="contact-name-error" className="mt-1.5 text-xs text-rose-300" role="alert">
+                        {fieldErrors.name}
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <label className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
+                    <label htmlFor="contact-email" className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
                       Your Email
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       name="email"
                       required
                       value={formData.email}
                       onChange={handleChange}
+                      autoComplete="email"
+                      aria-invalid={Boolean(fieldErrors.email)}
+                      aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
                       placeholder="e.g. alex@company.com"
                       className="w-full px-4 py-3.5 rounded-xl glass-panel border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all text-base"
                     />
+                    {fieldErrors.email && (
+                      <p id="contact-email-error" className="mt-1.5 text-xs text-rose-300" role="alert">
+                        {fieldErrors.email}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="contact-subject" className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
                     Subject / Project Interest
                   </label>
                   <input
+                    id="contact-subject"
                     type="text"
                     name="subject"
                     required
                     value={formData.subject}
                     onChange={handleChange}
+                    aria-invalid={Boolean(fieldErrors.subject)}
+                    aria-describedby={fieldErrors.subject ? 'contact-subject-error' : undefined}
                     placeholder="e.g. Hiring for MIS Executive Role"
                     className="w-full px-4 py-3.5 rounded-xl glass-panel border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all text-base"
                   />
+                  {fieldErrors.subject && (
+                    <p id="contact-subject-error" className="mt-1.5 text-xs text-rose-300" role="alert">
+                      {fieldErrors.subject}
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="contact-message" className="block text-[11px] sm:text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
                     Message
                   </label>
                   <textarea
+                    id="contact-message"
                     name="message"
                     rows="4"
                     required
                     value={formData.message}
                     onChange={handleChange}
+                    aria-invalid={Boolean(fieldErrors.message)}
+                    aria-describedby={fieldErrors.message ? 'contact-message-error' : undefined}
                     placeholder="Provide details on job opening or analytics requirement..."
                     className="w-full px-4 py-3.5 rounded-xl glass-panel border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all text-base resize-none"
                   />
+                  {fieldErrors.message && (
+                    <p id="contact-message-error" className="mt-1.5 text-xs text-rose-300" role="alert">
+                      {fieldErrors.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Animated Send Button */}
                 <button
                   type="submit"
                   disabled={isSending}
+                  aria-disabled={isSending}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white font-bold text-xs uppercase tracking-widest shadow-glow-blue hover:opacity-95 transition-all flex items-center justify-center gap-2.5 disabled:opacity-50"
                 >
                   {isSending ? (
-                    <span>TRANSMITTING MESSAGE...</span>
-                  ) : sentSuccess ? (
-                    <span className="flex items-center gap-2 text-emerald-300">
-                      <FiCheckCircle className="text-lg" /> TRANSMITTED SUCCESSFULLY!
-                    </span>
+                    <span>SENDING...</span>
                   ) : (
                     <>
                       <span>TRANSMIT MESSAGE</span> <FiSend className="text-base" />
@@ -228,11 +396,21 @@ export default function Contact({ personalInfo }) {
                   )}
                 </button>
 
-                {errorMessage && (
-                  <div className="p-3 rounded-xl glass-panel border border-rose-500/30 text-rose-300 text-xs font-mono text-center">
-                    {errorMessage}
-                  </div>
-                )}
+                <div
+                  role={status.type === 'error' ? 'alert' : 'status'}
+                  aria-live={status.type === 'error' ? 'assertive' : 'polite'}
+                  aria-atomic="true"
+                  className={status.message
+                    ? `p-3 rounded-xl glass-panel border text-xs font-mono text-center flex items-center justify-center gap-2 ${
+                      status.type === 'success'
+                        ? 'border-emerald-500/30 text-emerald-300'
+                        : 'border-rose-500/30 text-rose-300'
+                    }`
+                    : 'sr-only'}
+                >
+                  {status.type === 'success' && <FiCheckCircle className="text-lg shrink-0" aria-hidden="true" />}
+                  <span>{status.message}</span>
+                </div>
               </form>
             </div>
           </div>
